@@ -9,3 +9,6 @@ let string_is_int str =
   with
   | Failure _ -> false
 ;;
+
+let print_string_list list = List.iter list ~f:print_endline
+let compare_desc a b = compare a b * -1
