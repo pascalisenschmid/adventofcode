@@ -40,7 +40,19 @@ let make_list_matrix lines ~(f : char -> _) =
       Array.mapi row ~f:(fun x _ -> f line.(x)) |> Array.to_list)
     |> Array.to_list
   in
-  map
+  map, x, y
+;;
+
+let make_matrix_array lines ~(f : char -> _) =
+  let x = lines.(0) |> String.to_array |> Array.length in
+  let y = Array.length lines in
+  let map =
+    Array.make_matrix ~dimx:x ~dimy:y '.'
+    |> Array.mapi ~f:(fun y row ->
+      let line = lines.(y) |> String.to_array in
+      Array.mapi row ~f:(fun x _ -> f line.(x)))
+  in
+  map, x, y
 ;;
 
 let split_opt (list : 'a list) ~(on : 'a) ~(equal : 'a -> 'a -> bool) =
