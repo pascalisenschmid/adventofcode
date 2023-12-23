@@ -1,6 +1,7 @@
 open Core
 
 let read_lines file = In_channel.read_lines file
+let read_all file = In_channel.read_all file
 
 let string_is_int str =
   try
@@ -84,3 +85,18 @@ let split_opt (list : 'a list) ~(on : 'a) ~(equal : 'a -> 'a -> bool) =
   in
   aux list [] []
 ;;
+
+module Parser = struct
+  include Angstrom
+
+  let digit =
+    let is_digit = function
+      | '0' .. '9' -> true
+      | _ -> false
+    in
+    take_while1 is_digit >>| Int.of_string
+  ;;
+
+  let whitespace = take_while Char.is_whitespace
+  let newline = string "\n"
+end
