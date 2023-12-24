@@ -94,9 +94,15 @@ module Parser = struct
       | '0' .. '9' -> true
       | _ -> false
     in
-    take_while1 is_digit >>| Int.of_string
+    let* prefix = peek_char in
+    match prefix with
+    | Some '-' ->
+      let* _ = char '-' in
+      take_while1 is_digit >>| Int.of_string >>| Int.neg
+    | _ -> take_while1 is_digit >>| Int.of_string
   ;;
 
+  let fdigit = digit >>| Int.to_float
   let whitespace = take_while Char.is_whitespace
   let newline = string "\n"
 end
