@@ -1,0 +1,5 @@
+run day:
+	dune exec day{{day}} --profile=release
+
+watch day:
+	dune exec day{{day}} --watch --profile=release
