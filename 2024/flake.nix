@@ -31,6 +31,7 @@
                 ocamlPackages.ocaml-lsp
                 ocamlPackages.angstrom
                 ocamlPackages.ppx_deriving
+                ocamlPackages.re
               ];
               inputsFrom = [ self'.packages.default ];
             };

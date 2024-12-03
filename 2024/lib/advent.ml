@@ -1,5 +1,6 @@
 open Core
 
+let ( ||> ) (l, _) f = f l
 let read_lines file = In_channel.read_lines file
 let read_all file = In_channel.read_all file
 let read_lines_seq file = read_lines file |> Stdlib.List.to_seq
@@ -8,7 +9,7 @@ let remove_list_item list idx =
   let rec aux list cursor acc =
     match list with
     | [] -> acc
-    | hd :: tl when idx = cursor -> aux tl (cursor + 1) acc
+    | _ :: tl when idx = cursor -> aux tl (cursor + 1) acc
     | hd :: tl -> aux tl (cursor + 1) (hd :: acc)
   in
   aux list 0 []
