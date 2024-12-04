@@ -20,6 +20,18 @@ let range_seq start stop =
   Seq.unfold next start
 ;;
 
+let char_matrix lines =
+  let x = Array.length lines in
+  let y = lines.(0) |> String.to_array |> Array.length in
+  let map =
+    Array.make_matrix ~dimx:x ~dimy:y '.'
+    |> Array.mapi ~f:(fun y row ->
+      let line = lines.(y) |> String.to_array in
+      Array.mapi row ~f:(fun x _ -> line.(x)))
+  in
+  map, x, y
+;;
+
 module Parser = struct
   include Angstrom
 
