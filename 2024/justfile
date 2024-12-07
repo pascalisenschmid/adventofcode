@@ -1,3 +1,6 @@
+build:
+	dune build --profile release
+
 run day:
 	dune exec day{{day}} --profile=release
 

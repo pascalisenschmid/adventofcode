@@ -32,6 +32,7 @@
                 ocamlPackages.angstrom
                 ocamlPackages.ppx_deriving
                 ocamlPackages.re
+                ocamlPackages.fmt
               ];
               inputsFrom = [ self'.packages.default ];
             };

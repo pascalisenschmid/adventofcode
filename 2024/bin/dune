@@ -1,6 +1,6 @@
 (executables
- (public_names day01 day02 day03 day04 day05 day06)
- (names day01 day02 day03 day04 day05 day06)
+ (public_names day01 day02 day03 day04 day05 day06 day07)
+ (names day01 day02 day03 day04 day05 day06 day07)
  (preprocess
   (pps ppx_deriving.show ppx_deriving.enum ppx_deriving.eq ppx_jane))
- (libraries advent re))
+ (libraries advent re fmt))
