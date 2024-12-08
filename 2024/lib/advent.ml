@@ -1,5 +1,16 @@
 open Core
 
+type coordinate =
+  { x : int
+  ; y : int
+  }
+[@@deriving show, compare]
+
+type valuecoordinate =
+  { value : char
+  ; coordinate : coordinate
+  }
+
 let ( ||> ) (l, _) f = f l
 let read_lines file = In_channel.read_lines file
 let read_all file = In_channel.read_all file
@@ -42,6 +53,23 @@ let char_matrix lines =
       Array.mapi row ~f:(fun x _ -> line.(x)))
   in
   map, x, y
+;;
+
+let extract_not_equal matrix ~not =
+  Array.foldi matrix ~init:[] ~f:(fun idx acc row ->
+    Array.foldi row ~init:acc ~f:(fun idy acc c ->
+      match c with
+      | c' when List.exists ~f:(fun x -> Char.( = ) x c') not -> acc
+      | c' -> { value = c'; coordinate = { x = idx; y = idy } } :: acc))
+;;
+
+let extract_equal matrix ~ch =
+  Array.foldi matrix ~init:[] ~f:(fun idx acc row ->
+    Array.foldi row ~init:acc ~f:(fun idy acc c ->
+      match c with
+      | c' when List.exists ~f:(fun x -> Char.( = ) x c') ch ->
+        (c, { x = idx; y = idy }) :: acc
+      | _ -> acc))
 ;;
 
 module Parser = struct

@@ -1,8 +1,11 @@
 build:
-	dune build --profile release
+	@dune build --profile release
+
+perf day:
+	@time ./_build/default/bin/day{{day}}.exe
 
 run day:
-	dune exec day{{day}} --profile=release
+	@dune exec day{{day}} --profile=release
 
 watch day:
-	dune exec day{{day}} --watch --profile=release
+	@dune exec day{{day}} --watch --profile=release
