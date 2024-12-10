@@ -1,10 +1,10 @@
 open Core
 
 module Set = Stdlib.Set.Make (struct
-    type t = Advent.coordinate [@@deriving compare]
+    type t = Advent.Matrix.coordinate [@@deriving compare]
   end)
 
-let distance (a : Advent.coordinate) (b : Advent.coordinate) =
+let distance (a : Advent.Matrix.coordinate) (b : Advent.Matrix.coordinate) =
   a.x - b.x, a.y - b.y
 ;;
 
@@ -12,7 +12,7 @@ let positive = Int.( + )
 let negative = Int.( - )
 
 let move (dx, dy) direction coord =
-  Advent.{ x = direction coord.x dx; y = direction coord.y dy }
+  Advent.Matrix.{ x = direction coord.x dx; y = direction coord.y dy }
 ;;
 
 let part1 in_bounds coord other_nodes set =
@@ -49,7 +49,8 @@ let part2 in_bounds coord other_nodes set =
 ;;
 
 let in_bounds max_x max_y = function
-  | Advent.{ x; y } when x >= 0 && x < max_x && y >= 0 && y < max_y -> true
+  | Advent.Matrix.{ x; y } when x >= 0 && x < max_x && y >= 0 && y < max_y ->
+    true
   | _ -> false
 ;;
 
@@ -68,13 +69,15 @@ let solve antennas in_bounds part_solver =
 
 let () =
   let matrix, x, y =
-    Advent.read_lines "inputs/day08.txt" |> Array.of_list |> Advent.char_matrix
+    Advent.read_lines "inputs/day08.txt"
+    |> Array.of_list
+    |> Advent.Matrix.make ~f:(fun x -> x)
   in
   let in_bounds = in_bounds x y in
   let antennas =
-    Advent.extract_not_equal ~not:[ '.' ] matrix
-    |> List.sort_and_group ~compare:(fun a b -> Char.compare a.value b.value)
-    |> List.map ~f:(fun group -> List.map group ~f:(fun vc -> vc.coordinate))
+    Advent.Matrix.find_all_except ~not:[ '.' ] ~comparer:Char.( = ) matrix
+    |> List.sort_and_group ~compare:(fun (a, _) (b, _) -> Char.compare a b)
+    |> List.map ~f:(fun group -> List.map group ~f:(fun (_, c) -> c))
   in
   let solve = solve antennas in_bounds in
   let _ = solve part1 |> Fmt.pr "Part 1: %d\n" in

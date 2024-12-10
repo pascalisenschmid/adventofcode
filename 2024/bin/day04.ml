@@ -74,7 +74,9 @@ let find_cross matrix coords =
 
 let () =
   let matrix, _, _ =
-    Advent.read_lines "inputs/day04.txt" |> Array.of_list |> Advent.char_matrix
+    Advent.read_lines "inputs/day04.txt"
+    |> Array.of_list
+    |> Advent.Matrix.make ~f:(fun x -> x)
   in
   find_char 'X' matrix
   |> find_next 'M' matrix
@@ -87,7 +89,9 @@ let () =
 
 let () =
   let matrix, _, _ =
-    Advent.read_lines "inputs/day04.txt" |> Array.of_list |> Advent.char_matrix
+    Advent.read_lines "inputs/day04.txt"
+    |> Array.of_list
+    |> Advent.Matrix.make ~f:(fun x -> x)
   in
   find_char 'A' matrix
   |> find_cross matrix

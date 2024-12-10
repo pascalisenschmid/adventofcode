@@ -1,7 +1,5 @@
 open Core
 
-type coord = int * int [@@deriving equal, compare]
-
 type direction =
   | Left
   | Up
@@ -10,18 +8,20 @@ type direction =
 [@@deriving show, equal, compare]
 
 module Set = Stdlib.Set.Make (struct
-    type t = coord [@@deriving compare]
+    type t = Advent.Matrix.coordinate [@@deriving compare]
   end)
 
 module Set2 = Stdlib.Set.Make (struct
-    type t = coord * direction [@@deriving compare]
+    type t = Advent.Matrix.coordinate * direction [@@deriving compare]
   end)
 
-let next (x, y) = function
-  | Left -> x, y - 1
-  | Up -> x - 1, y
-  | Right -> x, y + 1
-  | Down -> x + 1, y
+let next coord dir =
+  let open Advent.Matrix in
+  match dir with
+  | Left -> { x = coord.x; y = coord.y - 1 }
+  | Up -> { x = coord.x - 1; y = coord.y }
+  | Right -> { x = coord.x; y = coord.y + 1 }
+  | Down -> { x = coord.x + 1; y = coord.y }
 ;;
 
 let turn_right = function
@@ -31,49 +31,26 @@ let turn_right = function
   | Left -> Up
 ;;
 
-let find_char char matrix =
-  Array.foldi
-    ~init:(false, (0, 0))
-    ~f:(fun idx (found, coords) row ->
-      match found with
-      | true -> found, coords
-      | false ->
-        Array.foldi row ~init:(found, coords) ~f:(fun idy (found, coords) c ->
-          match found with
-          | true -> found, coords
-          | false ->
-            (match c with
-             | c when Char.( = ) c char -> true, (idx, idy)
-             | _ -> found, coords)))
-    matrix
-  |> Tuple2.get2
-;;
-
-let get_char_opt matrix (x, y) =
-  try Some matrix.(x).(y) with
-  | Failure _ | Invalid_argument _ -> None
-;;
-
 let rec walk matrix set curr_pos curr_dir =
   let next_pos = next curr_pos curr_dir in
-  let x, y = next_pos in
-  match get_char_opt matrix next_pos with
+  match Advent.Matrix.get_opt matrix next_pos with
   | None -> set
   | Some '#' -> walk matrix set curr_pos (turn_right curr_dir)
   | Some '.' | Some '^' ->
     let set = Set.add next_pos set in
     walk matrix set next_pos curr_dir
-  | Some c -> sprintf "Found this: %c at %d %d" c x y |> failwith
+  | Some c -> sprintf "Found this: %c" c |> failwith
 ;;
 
 let walk2 matrix curr_pos curr_dir p1set =
+  let open Advent.Matrix in
   let rec detect_cycle matrix set curr_pos curr_dir obstacle_pos =
     let next_pos = next curr_pos curr_dir in
-    match get_char_opt matrix next_pos with
+    match get_opt matrix next_pos with
     | None -> 0
     | Some '#' ->
       detect_cycle matrix set curr_pos (turn_right curr_dir) obstacle_pos
-    | Some '.' when equal_coord next_pos obstacle_pos ->
+    | Some '.' when equal_coordinate next_pos obstacle_pos ->
       detect_cycle matrix set curr_pos (turn_right curr_dir) obstacle_pos
     | Some '.' | Some '^' ->
       let entry = next_pos, curr_dir in
@@ -93,9 +70,14 @@ let walk2 matrix curr_pos curr_dir p1set =
 
 let () =
   let matrix, _, _ =
-    Advent.read_lines "inputs/day06.txt" |> Array.of_list |> Advent.char_matrix
+    Advent.read_lines "inputs/day06.txt"
+    |> Array.of_list
+    |> Advent.Matrix.make ~f:(fun x -> x)
   in
-  let start_pos = find_char '^' matrix in
+  let _, start_pos =
+    Advent.Matrix.find_all matrix ~ch:[ '^' ] ~comparer:Char.( = )
+    |> List.hd_exn
+  in
   let start_dir = Up in
   let set = Set.empty |> Set.add start_pos in
   let set = walk matrix set start_pos start_dir in

@@ -1,16 +1,5 @@
 open Core
 
-type coordinate =
-  { x : int
-  ; y : int
-  }
-[@@deriving show, compare]
-
-type valuecoordinate =
-  { value : char
-  ; coordinate : coordinate
-  }
-
 let ( ||> ) (l, _) f = f l
 let read_lines file = In_channel.read_lines file
 let read_all file = In_channel.read_all file
@@ -43,34 +32,47 @@ let range_seq start stop =
   Seq.unfold next start
 ;;
 
-let char_matrix lines =
-  let x = Array.length lines in
-  let y = lines.(0) |> String.to_array |> Array.length in
-  let map =
-    Array.make_matrix ~dimx:x ~dimy:y '.'
-    |> Array.mapi ~f:(fun y row ->
-      let line = lines.(y) |> String.to_array in
-      Array.mapi row ~f:(fun x _ -> line.(x)))
-  in
-  map, x, y
-;;
+module Matrix = struct
+  type coordinate =
+    { x : int
+    ; y : int
+    }
+  [@@deriving show, compare, equal]
 
-let extract_not_equal matrix ~not =
-  Array.foldi matrix ~init:[] ~f:(fun idx acc row ->
-    Array.foldi row ~init:acc ~f:(fun idy acc c ->
-      match c with
-      | c' when List.exists ~f:(fun x -> Char.( = ) x c') not -> acc
-      | c' -> { value = c'; coordinate = { x = idx; y = idy } } :: acc))
-;;
+  let make lines ~f:transform =
+    let x = Array.length lines in
+    let y = lines.(0) |> String.to_array |> Array.length in
+    let map =
+      Array.make_matrix ~dimx:x ~dimy:y '.'
+      |> Array.mapi ~f:(fun y row ->
+        let line = lines.(y) |> String.to_array in
+        Array.mapi row ~f:(fun x _ -> line.(x) |> transform))
+    in
+    map, x, y
+  ;;
 
-let extract_equal matrix ~ch =
-  Array.foldi matrix ~init:[] ~f:(fun idx acc row ->
-    Array.foldi row ~init:acc ~f:(fun idy acc c ->
-      match c with
-      | c' when List.exists ~f:(fun x -> Char.( = ) x c') ch ->
-        (c, { x = idx; y = idy }) :: acc
-      | _ -> acc))
-;;
+  let find_all_except matrix ~not ~comparer =
+    Array.foldi matrix ~init:[] ~f:(fun idx acc row ->
+      Array.foldi row ~init:acc ~f:(fun idy acc c ->
+        match c with
+        | c' when List.exists ~f:(fun x -> comparer x c') not -> acc
+        | c' -> (c', { x = idx; y = idy }) :: acc))
+  ;;
+
+  let find_all matrix ~ch ~comparer =
+    Array.foldi matrix ~init:[] ~f:(fun idx acc row ->
+      Array.foldi row ~init:acc ~f:(fun idy acc c ->
+        match c with
+        | c' when List.exists ~f:(fun x -> comparer x c') ch ->
+          (c, { x = idx; y = idy }) :: acc
+        | _ -> acc))
+  ;;
+
+  let get_opt matrix (coord : coordinate) =
+    try Some matrix.(coord.x).(coord.y) with
+    | Failure _ | Invalid_argument _ -> None
+  ;;
+end
 
 module Parser = struct
   include Angstrom
