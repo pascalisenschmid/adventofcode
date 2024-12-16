@@ -1,7 +1,7 @@
 open Core
 
 module Seen = Stdlib.Set.Make (struct
-    type t = Advent.Matrix.coordinate [@@deriving compare]
+    type t = Advent.Matrix.coord [@@deriving compare]
   end)
 
 type direction =
@@ -15,7 +15,7 @@ type direction =
   | DownLeft
 [@@deriving show, equal, compare]
 
-let next (coord : Advent.Matrix.coordinate) dir =
+let next (coord : Advent.Matrix.coord) dir =
   let open Advent.Matrix in
   match dir with
   | Left -> { x = coord.x; y = coord.y - 1 }
@@ -34,7 +34,7 @@ let has_neighbor matrix coord ch dir =
   | _ -> false
 ;;
 
-let check_perimeter matrix (coord : Advent.Matrix.coordinate) ch =
+let check_perimeter matrix (coord : Advent.Matrix.coord) ch =
   let is_fence dir =
     match has_neighbor matrix coord ch dir with
     | true -> 0
@@ -57,7 +57,7 @@ let check_corners matrix coord ch =
   + is_corner Left UpLeft Up
 ;;
 
-let rec walk matrix seen ch evaluator (coord : Advent.Matrix.coordinate) =
+let rec walk matrix seen ch evaluator (coord : Advent.Matrix.coord) =
   match Advent.Matrix.get_opt matrix coord with
   | Some c when Char.( = ) c ch ->
     if Seen.mem coord seen

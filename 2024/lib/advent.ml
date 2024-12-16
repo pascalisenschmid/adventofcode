@@ -33,7 +33,7 @@ let range_seq start stop =
 ;;
 
 module Matrix = struct
-  type coordinate =
+  type coord =
     { x : int
     ; y : int
     }
@@ -68,7 +68,7 @@ module Matrix = struct
         | _ -> acc))
   ;;
 
-  let get_opt matrix (coord : coordinate) =
+  let get_opt matrix (coord : coord) =
     try Some matrix.(coord.x).(coord.y) with
     | Failure _ | Invalid_argument _ -> None
   ;;

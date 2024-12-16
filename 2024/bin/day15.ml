@@ -7,7 +7,7 @@ type direction =
   | Down
 [@@deriving show, equal, compare]
 
-let next (coord : Advent.Matrix.coordinate) dir =
+let next coord dir =
   let open Advent.Matrix in
   match dir with
   | Left -> { x = coord.x; y = coord.y - 1 }
