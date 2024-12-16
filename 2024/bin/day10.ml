@@ -7,7 +7,7 @@ type direction =
   | Down
 [@@deriving show, equal, compare]
 
-let next (coord : Advent.Matrix.coordinate) = function
+let next (coord : Advent.Matrix.coord) = function
   | Left -> Advent.Matrix.{ x = coord.x; y = coord.y - 1 }
   | Up -> Advent.Matrix.{ x = coord.x - 1; y = coord.y }
   | Right -> Advent.Matrix.{ x = coord.x; y = coord.y + 1 }
@@ -15,7 +15,7 @@ let next (coord : Advent.Matrix.coordinate) = function
 ;;
 
 module Set = Stdlib.Set.Make (struct
-    type t = Advent.Matrix.coordinate [@@deriving compare]
+    type t = Advent.Matrix.coord [@@deriving compare]
   end)
 
 let rec walk matrix current current_val set =

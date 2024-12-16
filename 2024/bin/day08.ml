@@ -1,10 +1,10 @@
 open Core
 
 module Set = Stdlib.Set.Make (struct
-    type t = Advent.Matrix.coordinate [@@deriving compare]
+    type t = Advent.Matrix.coord [@@deriving compare]
   end)
 
-let distance (a : Advent.Matrix.coordinate) (b : Advent.Matrix.coordinate) =
+let distance (a : Advent.Matrix.coord) (b : Advent.Matrix.coord) =
   a.x - b.x, a.y - b.y
 ;;
 

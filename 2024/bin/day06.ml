@@ -8,11 +8,11 @@ type direction =
 [@@deriving show, equal, compare]
 
 module Set = Stdlib.Set.Make (struct
-    type t = Advent.Matrix.coordinate [@@deriving compare]
+    type t = Advent.Matrix.coord [@@deriving compare]
   end)
 
 module Set2 = Stdlib.Set.Make (struct
-    type t = Advent.Matrix.coordinate * direction [@@deriving compare]
+    type t = Advent.Matrix.coord * direction [@@deriving compare]
   end)
 
 let next coord dir =
@@ -50,7 +50,7 @@ let walk2 matrix curr_pos curr_dir p1set =
     | None -> 0
     | Some '#' ->
       detect_cycle matrix set curr_pos (turn_right curr_dir) obstacle_pos
-    | Some '.' when equal_coordinate next_pos obstacle_pos ->
+    | Some '.' when equal_coord next_pos obstacle_pos ->
       detect_cycle matrix set curr_pos (turn_right curr_dir) obstacle_pos
     | Some '.' | Some '^' ->
       let entry = next_pos, curr_dir in
