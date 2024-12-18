@@ -3,6 +3,16 @@ open Core
 let ( ||> ) (l, _) f = f l
 let read_lines file = In_channel.read_lines file
 let read_all file = In_channel.read_all file
+
+let read_seq file =
+  Sequence.unfold_step ~init:(In_channel.create file) ~f:(fun in_channel ->
+    match In_channel.input_line in_channel with
+    | Some line -> Sequence.Step.Yield { value = line; state = in_channel }
+    | None ->
+      In_channel.close in_channel;
+      Sequence.Step.Done)
+;;
+
 let read_lines_seq file = read_lines file |> Stdlib.List.to_seq
 
 let split_on_empty_line lines =
