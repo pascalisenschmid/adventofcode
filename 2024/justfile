@@ -1,7 +1,7 @@
 build:
 	@dune build --profile release
 
-time day:
+time day: build
 	@time ./_build/default/bin/day{{day}}.exe
 
 run day:
