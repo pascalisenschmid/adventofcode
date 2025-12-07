@@ -1,4 +1,10 @@
-defmodule Day05 do
+defmodule AOC2025.Day05 do
+  def solve(path) do
+    parsed = path |> File.stream!() |> Enum.map(&String.trim/1) |> parse()
+    parsed |> part1()
+    parsed |> part2()
+  end
+
   def part1({ranges, nums}) do
     nums
     |> Enum.map(fn ingredient ->
@@ -25,7 +31,7 @@ defmodule Day05 do
   def p2(new_ranges, ranges) do
     case ranges do
       [] -> new_ranges
-      [hd | tl] -> new_ranges |> Enum.map(&Day05.fix_overlaps(hd, &1)) |> Enum.concat() |> p2(tl)
+      [hd | tl] -> new_ranges |> Enum.map(&fix_overlaps(hd, &1)) |> Enum.concat() |> p2(tl)
     end
   end
 
@@ -63,9 +69,3 @@ defmodule Day05 do
     end
   end
 end
-
-path = "inputs/day05.txt"
-
-parsed = path |> File.stream!() |> Enum.map(&String.trim/1) |> Day05.parse()
-parsed |> Day05.part1()
-parsed |> Day05.part2()

@@ -1,4 +1,9 @@
-defmodule Day06 do
+defmodule AOC2025.Day06 do
+  def solve(path) do
+    path |> File.stream!() |> solve(&parse_part1/1, "Part 1")
+    path |> File.stream!() |> solve(&parse_part2/1, "Part 2")
+  end
+
   def solve(lines, parser, output) do
     lines
     |> parser.()
@@ -71,8 +76,3 @@ defmodule Day06 do
     end)
   end
 end
-
-path = "inputs/day06.txt"
-
-path |> File.stream!() |> Day06.solve(&Day06.parse_part1/1, "Part 1")
-path |> File.stream!() |> Day06.solve(&Day06.parse_part2/1, "Part 2")

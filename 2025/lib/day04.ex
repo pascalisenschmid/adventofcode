@@ -1,4 +1,16 @@
-defmodule Day04 do
+defmodule AOC2025.Day04 do
+  def solve(path) do
+    path
+    |> File.stream!()
+    |> solve(&remove/1)
+    |> (fn {removed, _} -> IO.puts("Part 1: #{removed}") end).()
+
+    path
+    |> File.stream!()
+    |> solve(&remove_all/1)
+    |> (fn removed -> IO.puts("Part 2: #{removed}") end).()
+  end
+
   def solve(file, solver) do
     file
     |> Enum.map(&String.trim/1)
@@ -66,15 +78,3 @@ defmodule Day04 do
     ]
   end
 end
-
-path = "inputs/day04.txt"
-
-path
-|> File.stream!()
-|> Day04.solve(&Day04.remove/1)
-|> (fn {removed, _} -> IO.puts("Part 1: #{removed}") end).()
-
-path
-|> File.stream!()
-|> Day04.solve(&Day04.remove_all/1)
-|> (fn removed -> IO.puts("Part 2: #{removed}") end).()

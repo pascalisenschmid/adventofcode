@@ -1,4 +1,9 @@
-defmodule Day02 do
+defmodule AOC2025.Day02 do
+  def solve(path) do
+    path |> File.read!() |> solve(&part1/3, "Part 1")
+    path |> File.read!() |> solve(&part2/3, "Part 2")
+  end
+
   def solve(file, solver, output) do
     file
     |> String.trim()
@@ -45,7 +50,3 @@ defmodule Day02 do
       end)
   end
 end
-
-path = "inputs/day02.txt"
-path |> File.read!() |> Day02.solve(&Day02.part1/3, "Part 1")
-path |> File.read!() |> Day02.solve(&Day02.part2/3, "Part 2")

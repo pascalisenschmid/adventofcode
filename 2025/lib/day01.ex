@@ -1,4 +1,9 @@
-defmodule Day01 do
+defmodule AOC2025.Day01 do
+  def solve(path) do
+    path |> File.stream!() |> solve(&part1/1, "Part 1")
+    path |> File.stream!() |> solve(&part2/1, "Part 2")
+  end
+
   def solve(file, solver, output) do
     file
     |> Enum.map(&parse_line/1)
@@ -56,7 +61,3 @@ defmodule Day01 do
         end).()
   end
 end
-
-path = "inputs/day01.txt"
-path |> File.stream!() |> Day01.solve(&Day01.part1/1, "Part 1")
-path |> File.stream!() |> Day01.solve(&Day01.part2/1, "Part 2")
