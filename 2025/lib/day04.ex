@@ -1,22 +1,20 @@
 defmodule AOC2025.Day04 do
+  alias Common.Matrix
+
   def solve(path) do
     path
-    |> File.stream!()
-    |> solve(&remove/1)
+    |> Matrix.from()
+    |> remove()
     |> (fn {removed, _} -> IO.puts("Part 1: #{removed}") end).()
 
     path
-    |> File.stream!()
-    |> solve(&remove_all/1)
+    |> Matrix.from()
+    |> remove_all()
     |> (fn removed -> IO.puts("Part 2: #{removed}") end).()
   end
 
-  def solve(file, solver) do
-    file
-    |> Enum.map(&String.trim/1)
-    |> Enum.map(&String.graphemes/1)
-    |> Enum.to_list()
-    |> solver.()
+  def solve(matrix, solver) do
+    matrix |> solver.()
   end
 
   def remove_all(matrix) do
