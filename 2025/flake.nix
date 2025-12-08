@@ -10,8 +10,8 @@
     in {
       devShells.${system}.default = pkgs.mkShell {
         packages = with pkgs; [
-          beam.packages.erlang_26.elixir
-          beam.packages.erlang_26.erlang
+          beam.packages.erlang_28.elixir_1_19
+          beam.packages.erlang_28.erlang
           elixir-ls
         ];
       };
